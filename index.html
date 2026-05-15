@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!--
+    QR Photo Drop · Guillermo & Loren · 16 de mayo de 2026
+    SPA de una sola página con 3 estados (welcome, preview, success).
+    Todo client-side: HTML + CSS + JS vanilla + Firebase SDK por CDN.
+    Mobile-first. La estética imita el cartel acrílico dorado del seating chart.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0E0B07">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Guillermo & Loren · 16 de mayo de 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #C9A85C;
+      --gold-deep: #A8884A;
+      --gold-soft: #E4CF94;
+      --cream: #F5EFE2;
+      --ivory: #FAF6EE;
+      --ink: #1F1A14;
+      --ink-soft: #4A3F30;
+      --bg-dark: #0E0B07;
+      --success: #7A8A6F;
+      --error: #B5503A;
+      --shadow: 0 8px 30px rgba(31, 26, 20, 0.12);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at top, #FBF6EA 0%, #F2E9D3 100%) fixed;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      width: 220px;
+      height: 220px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      top: -30px;
+      left: -30px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g fill='none' stroke='%23A8884A' stroke-width='1.4' stroke-linecap='round'><path d='M20 180 C 40 130, 60 110, 90 90 M30 170 Q 50 150 70 145 M40 160 Q 55 140 75 130'/><circle cx='95' cy='80' r='10' fill='%23C9A85C' fill-opacity='0.3'/><path d='M95 80 q -6 -10 -2 -20 q 8 -2 12 6 q 0 10 -10 14 Z M95 80 q 6 -10 2 -20 q -8 -2 -12 6 q 0 10 10 14 Z M95 80 q -10 -2 -14 -12 q 4 -8 14 -6 q 8 4 0 18 Z M95 80 q 10 -2 14 -12 q -4 -8 -14 -6 q -8 4 0 18 Z' fill='%23C9A85C' fill-opacity='0.35'/><path d='M50 130 q 6 -4 10 -10 M60 140 q 8 -4 12 -10 M70 150 q 8 -4 14 -10'/></g></svg>");
+    }
+    body::after {
+      bottom: -30px;
+      right: -30px;
+      transform: scaleX(-1);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g fill='none' stroke='%23A8884A' stroke-width='1.4' stroke-linecap='round'><path d='M20 180 C 40 130, 60 110, 90 90 M30 170 Q 50 150 70 145 M40 160 Q 55 140 75 130'/><circle cx='95' cy='80' r='10' fill='%23C9A85C' fill-opacity='0.3'/><path d='M95 80 q -6 -10 -2 -20 q 8 -2 12 6 q 0 10 -10 14 Z M95 80 q 6 -10 2 -20 q -8 -2 -12 6 q 0 10 10 14 Z M95 80 q -10 -2 -14 -12 q 4 -8 14 -6 q 8 4 0 18 Z M95 80 q 10 -2 14 -12 q -4 -8 -14 -6 q -8 4 0 18 Z' fill='%23C9A85C' fill-opacity='0.35'/><path d='M50 130 q 6 -4 10 -10 M60 140 q 8 -4 12 -10 M70 150 q 8 -4 14 -10'/></g></svg>");
+    }
+
+    main.app {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 22px calc(32px + env(safe-area-inset-bottom));
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .couple {
+      font-family: 'Great Vibes', cursive;
+      font-weight: 400;
+      font-size: clamp(46px, 13vw, 64px);
+      color: var(--gold-deep);
+      margin: 0;
+      line-height: 1;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 0 rgba(168, 136, 74, 0.15);
+    }
+    .date {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--gold-deep);
+      margin: 10px 0 0;
+      text-transform: uppercase;
+    }
+    .divider {
+      margin: 14px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--gold);
+    }
+    .divider::before, .divider::after {
+      content: "";
+      display: block;
+      height: 1px;
+      width: 60px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .divider .diamond {
+      font-size: 10px;
+      color: var(--gold);
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .screen {
+      animation: fade 0.4s ease;
+    }
+    .hidden { display: none !important; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .mesa-card {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(201, 168, 92, 0.45);
+      border-radius: var(--radius);
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+    .mesa-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--gold-deep);
+      margin: 0 0 4px;
+      letter-spacing: 1px;
+    }
+    .mesa-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 64px;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1;
+      letter-spacing: 2px;
+    }
+
+    .mesa-selector {
+      margin-top: 14px;
+      text-align: center;
+    }
+    .mesa-selector label {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+
+    .field-select, .field-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--ink);
+      background: var(--ivory);
+      border: 1px solid rgba(168, 136, 74, 0.4);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.15s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--gold-deep) 50%),
+                        linear-gradient(135deg, var(--gold-deep) 50%, transparent 50%);
+      background-position: calc(100% - 18px) 19px, calc(100% - 13px) 19px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    .field-input {
+      background-image: none;
+    }
+    .field-select:focus, .field-input:focus {
+      border-color: var(--gold);
+    }
+
+    .message {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      text-align: center;
+      margin: 24px 6px;
+    }
+
+    .name-toggle {
+      margin: 4px 0 20px;
+    }
+    .name-toggle-btn {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--gold-deep);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      padding: 8px;
+      width: 100%;
+      text-align: center;
+    }
+    .nombre-fields {
+      margin-top: 12px;
+      animation: fade 0.3s ease;
+    }
+    .nombre-fields label {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .btn-primary, .btn-secondary {
+      display: block;
+      width: 100%;
+      min-height: 56px;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.08s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--ink);
+      color: var(--ivory);
+      box-shadow: 0 4px 18px rgba(31, 26, 20, 0.25), inset 0 0 0 1px var(--gold);
+    }
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+    .btn-primary:disabled {
+      background: #aaa;
+      color: #f5f5f5;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--gold-deep);
+      margin-bottom: 14px;
+    }
+    .btn-secondary:active {
+      background: rgba(201, 168, 92, 0.1);
+    }
+
+    h2.screen-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 28px;
+      color: var(--gold-deep);
+      text-align: center;
+      margin: 8px 0 18px;
+    }
+
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .thumb {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--cream);
+      box-shadow: 0 2px 8px rgba(31, 26, 20, 0.1);
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb .remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(31, 26, 20, 0.7);
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb.status-uploading::after,
+    .thumb.status-error::after,
+    .thumb.status-done::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .thumb.status-uploading::after { background: rgba(31, 26, 20, 0.45); }
+    .thumb.status-uploading .spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-top-color: var(--gold-soft);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .thumb.status-done::after {
+      background: rgba(122, 138, 111, 0.55);
+    }
+    .thumb.status-done .check-mark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 34px;
+      font-weight: 700;
+    }
+    .thumb.status-error::after {
+      background: rgba(181, 80, 58, 0.55);
+    }
+    .thumb.status-error .err-mark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .progress-container {
+      margin: 18px 0;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(168, 136, 74, 0.2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+      transition: width 0.25s ease;
+    }
+    .progress-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-align: center;
+      margin: 8px 0 0;
+      letter-spacing: 0.5px;
+    }
+
+    .warning {
+      background: rgba(181, 80, 58, 0.12);
+      color: var(--error);
+      border: 1px solid rgba(181, 80, 58, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .success-block {
+      text-align: center;
+      padding: 16px 8px;
+    }
+    .check-icon {
+      width: 88px;
+      height: 88px;
+      margin: 12px auto 16px;
+      border-radius: 50%;
+      background: var(--success);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: 700;
+      box-shadow: 0 8px 28px rgba(122, 138, 111, 0.35);
+    }
+    .success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 28px;
+      color: var(--gold-deep);
+      margin: 0 0 8px;
+      line-height: 1.2;
+    }
+    .success-stats {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--ink-soft);
+      margin: 0 0 24px;
+    }
+    .success-stats strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .failed-note {
+      font-size: 13px;
+      color: var(--error);
+      margin: -16px 0 16px;
+    }
+
+    .footer-mini {
+      margin-top: auto;
+      padding-top: 28px;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--gold-deep);
+      opacity: 0.7;
+    }
+
+    @media (min-width: 540px) {
+      main.app { padding-top: 48px; }
+      .couple { font-size: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="app">
+
+    <header class="hero">
+      <h1 class="couple">Guillermo &amp; Loren</h1>
+      <p class="date">16 DE MAYO DE 2026</p>
+      <div class="divider"><span class="diamond">◆</span></div>
+    </header>
+
+    <!-- ====================== PANTALLA A: BIENVENIDA ====================== -->
+    <section id="screen-welcome" class="screen">
+      <div id="mesa-card" class="mesa-card hidden">
+        <p class="mesa-label">Mesa</p>
+        <p class="mesa-number" id="mesa-display">—</p>
+      </div>
+
+      <div id="mesa-selector" class="mesa-selector hidden">
+        <label for="mesa-select">Elige tu mesa</label>
+        <select id="mesa-select" class="field-select" aria-label="Selecciona tu mesa">
+          <option value="">— Selecciona —</option>
+        </select>
+      </div>
+
+      <p class="message">Tus fotos cuentan nuestra historia.<br>Compártelas con nosotros.</p>
+
+      <div class="name-toggle">
+        <button type="button" id="toggle-nombre" class="name-toggle-btn">+ Agregar mi nombre (opcional)</button>
+        <div id="nombre-fields" class="nombre-fields hidden">
+          <label for="nombre-select">¿Quién eres?</label>
+          <select id="nombre-select" class="field-select" aria-label="Selecciona tu nombre">
+            <option value="">— No especificar —</option>
+          </select>
+          <p style="text-align:center;margin:10px 0 0;font-size:13px;color:var(--ink-soft);">
+            ¿No estás en la lista?
+            <button type="button" id="show-custom-name" style="background:none;border:none;color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px;font-size:13px;cursor:pointer;padding:0;">Escríbelo aquí</button>
+          </p>
+          <input type="text" id="nombre-custom" class="field-input hidden" placeholder="Tu nombre" maxlength="80" style="margin-top:10px;" autocomplete="off">
+        </div>
+      </div>
+
+      <label id="btn-pick" for="file-input" class="btn-primary">📷 Tomar foto / Elegir de galería</label>
+      <input type="file" id="file-input" accept="image/*" multiple capture="environment" hidden>
+
+      <div id="welcome-offline" class="warning hidden">Sin conexión: vas a poder tomar fotos, pero no se enviarán hasta que vuelva el internet.</div>
+    </section>
+
+    <!-- ====================== PANTALLA B: PREVIEW + SUBIDA ====================== -->
+    <section id="screen-preview" class="screen hidden">
+      <h2 class="screen-title">Tus fotos</h2>
+      <div id="thumb-grid" class="thumb-grid"></div>
+
+      <label for="file-input-more" class="btn-secondary">+ Agregar más</label>
+      <input type="file" id="file-input-more" accept="image/*" multiple capture="environment" hidden>
+
+      <button id="btn-upload" type="button" class="btn-primary">
+        Enviar <span id="upload-count">0</span> fotos
+      </button>
+
+      <div id="progress-container" class="progress-container hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <p id="progress-text" class="progress-text">0 de 0 subidas</p>
+      </div>
+
+      <div id="preview-offline" class="warning hidden">Sin conexión, intenta de nuevo cuando vuelva el internet.</div>
+    </section>
+
+    <!-- ====================== PANTALLA C: CONFIRMACIÓN ====================== -->
+    <section id="screen-success" class="screen hidden">
+      <div class="success-block">
+        <div class="check-icon">✓</div>
+        <h2 class="success-title">¡Gracias por ser parte<br>de nuestra historia!</h2>
+        <p class="success-stats">Subiste <strong><span id="success-count">0</span> fotos</strong>.</p>
+        <p id="failed-note" class="failed-note hidden"></p>
+        <button id="btn-more" type="button" class="btn-primary">Subir más fotos</button>
+      </div>
+    </section>
+
+    <div class="footer-mini">
+      <div class="divider" style="margin-top:0;"><span class="diamond">◆</span></div>
+      Con cariño · 16.05.2026
+    </div>
+
+  </main>
+
+  <!-- Compresión de imágenes en el cliente (browser-image-compression).
+       Reducimos el archivo antes de subir para ahorrar Storage y tiempo.
+       Versión fijada para evitar sorpresas. -->
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+
+  <script type="module">
+    // ============================================================
+    //  Lógica QR Photo Drop · vanilla JS + Firebase modular v10
+    // ============================================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getStorage, ref, uploadBytesResumable, getMetadata
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    import {
+      firebaseConfig, BODA_ID, TOTAL_MESAS, INVITADOS_POR_MESA
+    } from "./firebase-config.js";
+
+    // -------------------- Bootstrap Firebase --------------------
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+    const db = getFirestore(app);
+
+    // -------------------- Estado en memoria --------------------
+    const state = {
+      mesa: null,           // number | null
+      nombre: null,         // string | null
+      pending: [],          // [{ id, file, previewUrl, status, error }]
+      uploading: false
+    };
+
+    // -------------------- Refs DOM --------------------
+    const $ = (sel) => document.querySelector(sel);
+    const screens = {
+      welcome: $("#screen-welcome"),
+      preview: $("#screen-preview"),
+      success: $("#screen-success")
+    };
+    const mesaCard = $("#mesa-card");
+    const mesaDisplay = $("#mesa-display");
+    const mesaSelector = $("#mesa-selector");
+    const mesaSelect = $("#mesa-select");
+    const toggleNombreBtn = $("#toggle-nombre");
+    const nombreFields = $("#nombre-fields");
+    const nombreSelect = $("#nombre-select");
+    const nombreCustom = $("#nombre-custom");
+    const showCustomNameBtn = $("#show-custom-name");
+    const fileInput = $("#file-input");
+    const fileInputMore = $("#file-input-more");
+    const btnPick = $("#btn-pick");
+    const thumbGrid = $("#thumb-grid");
+    const btnUpload = $("#btn-upload");
+    const uploadCountEl = $("#upload-count");
+    const progressContainer = $("#progress-container");
+    const progressFill = $("#progress-fill");
+    const progressText = $("#progress-text");
+    const successCountEl = $("#success-count");
+    const failedNote = $("#failed-note");
+    const btnMore = $("#btn-more");
+    const welcomeOffline = $("#welcome-offline");
+    const previewOffline = $("#preview-offline");
+
+    // -------------------- Util --------------------
+    const showScreen = (name) => {
+      Object.entries(screens).forEach(([k, el]) => {
+        el.classList.toggle("hidden", k !== name);
+      });
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+
+    const uuid = () => Math.random().toString(36).slice(2, 10);
+
+    const simplifiedUA = () => {
+      const ua = navigator.userAgent || "";
+      const platform =
+        /iPhone|iPad|iPod/i.test(ua) ? "iOS" :
+        /Android/i.test(ua) ? "Android" :
+        /Mac/i.test(ua) ? "Mac" :
+        /Windows/i.test(ua) ? "Windows" : "Other";
+      const browser =
+        /CriOS/i.test(ua) ? "Chrome iOS" :
+        /Chrome/i.test(ua) ? "Chrome" :
+        /Safari/i.test(ua) ? "Safari" :
+        /Firefox/i.test(ua) ? "Firefox" : "Other";
+      return `${platform} ${browser}`;
+    };
+
+    // -------------------- Mesa (URL + localStorage) --------------------
+    const LS_MESA = "boda-gl-mesa";
+
+    function readMesaFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("mesa");
+      if (!raw) return null;
+      const n = parseInt(raw, 10);
+      return Number.isInteger(n) && n >= 1 && n <= TOTAL_MESAS ? n : null;
+    }
+
+    function readMesaFromStorage() {
+      const raw = localStorage.getItem(LS_MESA);
+      const n = parseInt(raw, 10);
+      return Number.isInteger(n) && n >= 1 && n <= TOTAL_MESAS ? n : null;
+    }
+
+    function setMesa(n) {
+      state.mesa = n;
+      if (n) {
+        localStorage.setItem(LS_MESA, String(n));
+        mesaDisplay.textContent = n;
+        mesaCard.classList.remove("hidden");
+        mesaSelector.classList.add("hidden");
+        populateNombres(n);
+      } else {
+        mesaCard.classList.add("hidden");
+        mesaSelector.classList.remove("hidden");
+        populateNombres(null);
+      }
+    }
+
+    // Llenamos el <select> de mesas (1..7)
+    function populateMesaSelector() {
+      for (let i = 1; i <= TOTAL_MESAS; i++) {
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = `Mesa ${i}`;
+        mesaSelect.appendChild(opt);
+      }
+    }
+
+    // Llenamos el <select> de nombres según la mesa
+    function populateNombres(mesa) {
+      // Limpiar (dejar solo el placeholder)
+      while (nombreSelect.options.length > 1) nombreSelect.remove(1);
+      if (!mesa || !INVITADOS_POR_MESA[mesa]) return;
+      INVITADOS_POR_MESA[mesa].forEach((nombre) => {
+        const opt = document.createElement("option");
+        opt.value = nombre;
+        opt.textContent = nombre;
+        nombreSelect.appendChild(opt);
+      });
+    }
+
+    // -------------------- Selección de fotos --------------------
+    async function handleFileSelection(filesList) {
+      const files = Array.from(filesList || []);
+      if (!files.length) return;
+      // Solo imágenes (algunos pickers cuelan otros tipos)
+      const valid = files.filter(f => f.type && f.type.startsWith("image/"));
+      if (!valid.length) {
+        alert("Selecciona archivos de imagen.");
+        return;
+      }
+      valid.forEach((file) => {
+        state.pending.push({
+          id: uuid(),
+          file,
+          previewUrl: URL.createObjectURL(file),
+          status: "ready",
+          error: null
+        });
+      });
+      renderThumbs();
+      showScreen("preview");
+    }
+
+    function removePending(id) {
+      const idx = state.pending.findIndex(p => p.id === id);
+      if (idx < 0) return;
+      try { URL.revokeObjectURL(state.pending[idx].previewUrl); } catch (_) {}
+      state.pending.splice(idx, 1);
+      renderThumbs();
+      if (!state.pending.length) showScreen("welcome");
+    }
+
+    function renderThumbs() {
+      thumbGrid.innerHTML = "";
+      state.pending.forEach((p) => {
+        const wrap = document.createElement("div");
+        wrap.className = `thumb status-${p.status}`;
+        wrap.dataset.id = p.id;
+        const img = document.createElement("img");
+        img.src = p.previewUrl;
+        img.alt = "";
+        wrap.appendChild(img);
+        if (p.status === "ready") {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "remove";
+          btn.setAttribute("aria-label", "Quitar foto");
+          btn.textContent = "✕";
+          btn.addEventListener("click", () => removePending(p.id));
+          wrap.appendChild(btn);
+        } else if (p.status === "uploading") {
+          const sp = document.createElement("div");
+          sp.className = "spinner";
+          wrap.appendChild(sp);
+        } else if (p.status === "done") {
+          const ck = document.createElement("div");
+          ck.className = "check-mark";
+          ck.textContent = "✓";
+          wrap.appendChild(ck);
+        } else if (p.status === "error") {
+          const er = document.createElement("div");
+          er.className = "err-mark";
+          er.textContent = "!";
+          wrap.appendChild(er);
+        }
+        thumbGrid.appendChild(wrap);
+      });
+      uploadCountEl.textContent = state.pending.filter(p => p.status !== "done").length;
+      btnUpload.disabled = state.pending.length === 0 || state.uploading;
+    }
+
+    // -------------------- Compresión --------------------
+    async function compressImage(file) {
+      // browser-image-compression es global vía CDN: window.imageCompression
+      const options = {
+        maxSizeMB: 3,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        initialQuality: 0.85,
+        fileType: "image/jpeg"
+      };
+      try {
+        return await window.imageCompression(file, options);
+      } catch (err) {
+        console.warn("Compresión falló, subo original", err);
+        return file; // fallback: subir el original
+      }
+    }
+
+    // -------------------- Subida con reintentos --------------------
+    async function uploadOne(pending) {
+      pending.status = "uploading";
+      pending.error = null;
+      renderThumbs();
+
+      const mesa = state.mesa;
+      let lastErr = null;
+
+      // Comprimir una vez (caro), reintentar la subida 3 intentos en total
+      const compressed = await compressImage(pending.file);
+      const ts = Date.now();
+      const ext = (compressed.type && compressed.type.includes("jpeg")) ? "jpg" : "bin";
+      const filename = `${ts}_${uuid()}.${ext}`;
+      const storagePath = `${BODA_ID}/mesa-${mesa}/${filename}`;
+
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          await new Promise((resolve, reject) => {
+            const storageRef = ref(storage, storagePath);
+            const task = uploadBytesResumable(storageRef, compressed, {
+              contentType: compressed.type || "image/jpeg"
+            });
+            task.on(
+              "state_changed",
+              null,
+              (err) => reject(err),
+              () => resolve()
+            );
+          });
+
+          // Doc en Firestore (best-effort: si falla no rompemos la subida)
+          try {
+            await addDoc(collection(db, "fotos"), {
+              mesa,
+              nombre: state.nombre || null,
+              storagePath,
+              filename,
+              timestamp: serverTimestamp(),
+              sizeBytes: compressed.size || 0,
+              deviceInfo: simplifiedUA()
+            });
+          } catch (metaErr) {
+            console.warn("Metadata en Firestore falló (foto sí subió):", metaErr);
+          }
+
+          pending.status = "done";
+          renderThumbs();
+          return true;
+        } catch (err) {
+          lastErr = err;
+          console.warn(`Intento ${attempt} falló para ${filename}:`, err);
+          if (attempt < 3) {
+            // Backoff progresivo: 800ms, 1.6s
+            await new Promise(r => setTimeout(r, 800 * attempt));
+          }
+        }
+      }
+
+      pending.status = "error";
+      pending.error = lastErr;
+      renderThumbs();
+      return false;
+    }
+
+    async function uploadAll() {
+      if (!state.mesa) {
+        alert("Selecciona tu mesa antes de enviar.");
+        showScreen("welcome");
+        return;
+      }
+      if (!state.pending.length) return;
+      if (!navigator.onLine) {
+        previewOffline.classList.remove("hidden");
+        return;
+      }
+
+      state.uploading = true;
+      btnUpload.disabled = true;
+      progressContainer.classList.remove("hidden");
+
+      const toUpload = state.pending.filter(p => p.status !== "done");
+      let doneCount = 0;
+      let okCount = 0;
+
+      const updateProgress = () => {
+        const pct = toUpload.length ? Math.round((doneCount / toUpload.length) * 100) : 0;
+        progressFill.style.width = `${pct}%`;
+        progressText.textContent = `${doneCount} de ${toUpload.length} subidas`;
+      };
+      updateProgress();
+
+      // Subida en serie para no saturar la red móvil
+      for (const p of toUpload) {
+        const ok = await uploadOne(p);
+        doneCount++;
+        if (ok) okCount++;
+        updateProgress();
+      }
+
+      state.uploading = false;
+
+      const failed = toUpload.length - okCount;
+      successCountEl.textContent = okCount;
+      if (failed > 0) {
+        failedNote.textContent = `${failed} foto${failed === 1 ? "" : "s"} no se pudieron subir. Vuelve a la pantalla anterior e intenta de nuevo.`;
+        failedNote.classList.remove("hidden");
+      } else {
+        failedNote.classList.add("hidden");
+      }
+
+      // Liberar memoria de las exitosas
+      state.pending = state.pending.filter(p => p.status !== "done");
+      renderThumbs();
+      progressContainer.classList.add("hidden");
+      progressFill.style.width = "0%";
+
+      showScreen("success");
+    }
+
+    // -------------------- Conectividad --------------------
+    function updateConnectivity() {
+      const off = !navigator.onLine;
+      welcomeOffline.classList.toggle("hidden", !off);
+      previewOffline.classList.toggle("hidden", !off);
+    }
+    window.addEventListener("online", updateConnectivity);
+    window.addEventListener("offline", updateConnectivity);
+
+    // -------------------- Listeners --------------------
+    fileInput.addEventListener("change", (e) => {
+      if (!state.mesa) {
+        alert("Selecciona tu mesa primero.");
+        e.target.value = "";
+        return;
+      }
+      handleFileSelection(e.target.files);
+      e.target.value = "";
+    });
+    fileInputMore.addEventListener("change", (e) => {
+      handleFileSelection(e.target.files);
+      e.target.value = "";
+    });
+
+    // Bloquear el botón si no hay mesa
+    btnPick.addEventListener("click", (e) => {
+      if (!state.mesa) {
+        e.preventDefault();
+        alert("Por favor selecciona tu mesa para continuar.");
+        mesaSelect.focus();
+      }
+    });
+
+    mesaSelect.addEventListener("change", (e) => {
+      const n = parseInt(e.target.value, 10);
+      if (Number.isInteger(n) && n >= 1 && n <= TOTAL_MESAS) setMesa(n);
+    });
+
+    toggleNombreBtn.addEventListener("click", () => {
+      const hidden = nombreFields.classList.toggle("hidden");
+      toggleNombreBtn.textContent = hidden
+        ? "+ Agregar mi nombre (opcional)"
+        : "− Ocultar campo de nombre";
+    });
+
+    showCustomNameBtn.addEventListener("click", () => {
+      nombreSelect.value = "";
+      nombreCustom.classList.remove("hidden");
+      nombreCustom.focus();
+    });
+
+    nombreSelect.addEventListener("change", (e) => {
+      state.nombre = e.target.value || null;
+      if (state.nombre) {
+        nombreCustom.value = "";
+        nombreCustom.classList.add("hidden");
+      }
+    });
+    nombreCustom.addEventListener("input", (e) => {
+      const v = e.target.value.trim();
+      state.nombre = v || null;
+    });
+
+    btnUpload.addEventListener("click", uploadAll);
+
+    btnMore.addEventListener("click", () => {
+      // Mantener mesa y nombre, limpiar selección
+      state.pending.forEach(p => { try { URL.revokeObjectURL(p.previewUrl); } catch (_) {} });
+      state.pending = [];
+      renderThumbs();
+      showScreen("welcome");
+    });
+
+    // -------------------- Init --------------------
+    populateMesaSelector();
+    const mesaFromURL = readMesaFromURL();
+    const mesaFromLS = readMesaFromStorage();
+    const initialMesa = mesaFromURL ?? mesaFromLS ?? null;
+    if (initialMesa) {
+      setMesa(initialMesa);
+      // Sincronizar select también (por si el usuario abre el selector)
+      mesaSelect.value = String(initialMesa);
+    } else {
+      setMesa(null);
+    }
+    updateConnectivity();
+    showScreen("welcome");
+  </script>
+
+</body>
+</html>

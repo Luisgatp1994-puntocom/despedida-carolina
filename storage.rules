@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Reglas de Firebase Storage para el QR Photo Drop de Guillermo & Loren.
+// Permitimos escritura anónima para que cualquier invitado pueda subir
+// fotos sin necesidad de cuenta, pero acotada a:
+//   - rama /boda-guillermo-loren/ (sin tocar otros buckets)
+//   - tamaño máximo 15 MB por archivo (más que suficiente tras compresión)
+//   - únicamente Content-Type image/*
+//
+// La lectura queda bloqueada para todo el mundo: solo los novios pueden
+// descargar el bulk desde la Firebase Console o vía gcloud/gsutil con su
+// cuenta de propietario del proyecto.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /boda-guillermo-loren/{allPaths=**} {
+      allow write: if request.resource.size < 15 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+      allow read: if false;
+    }
+  }
+}

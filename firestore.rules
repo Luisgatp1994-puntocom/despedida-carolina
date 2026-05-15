@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Reglas de Firestore para el QR Photo Drop de Guillermo & Loren.
+// Solo permitimos CREATE sobre la colección "fotos" y validamos que la mesa
+// esté dentro del rango real (1..7). Todo lo demás (read/update/delete)
+// queda bloqueado: los novios consultan desde la Firebase Console.
+//
+// Nota: NO validamos el resto de campos (storagePath, filename, etc.) porque
+// el cliente los completa de forma confiable y un atacante real solo podría
+// crear documentos basura, no leerlos ni alterarlos.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /fotos/{fotoId} {
+      allow create: if request.resource.data.mesa is int
+                    && request.resource.data.mesa >= 1
+                    && request.resource.data.mesa <= 7;
+      allow read, update, delete: if false;
+    }
+  }
+}
