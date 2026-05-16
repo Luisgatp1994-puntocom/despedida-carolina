@@ -3,12 +3,12 @@
 // Estos valores son públicos (no son secretos): las reglas de Storage/Firestore son la seguridad real.
 
 export const firebaseConfig = {
-  apiKey: "__REEMPLAZAR_API_KEY__",
-  authDomain: "__REEMPLAZAR_AUTH_DOMAIN__",
-  projectId: "__REEMPLAZAR_PROJECT_ID__",
-  storageBucket: "__REEMPLAZAR_STORAGE_BUCKET__",
-  messagingSenderId: "__REEMPLAZAR_SENDER_ID__",
-  appId: "__REEMPLAZAR_APP_ID__"
+  apiKey: "AIzaSyC1iE6-ZclLILqYkgH4oFKlzHZswIlK4e4",
+  authDomain: "boda-guillermo-loren.firebaseapp.com",
+  projectId: "boda-guillermo-loren",
+  storageBucket: "boda-guillermo-loren.firebasestorage.app",
+  messagingSenderId: "653157717381",
+  appId: "1:653157717381:web:5959ecb5088b59f308a0ec"
 };
 
 export const BODA_ID = "boda-guillermo-loren";
