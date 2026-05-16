@@ -48,9 +48,6 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-/* ============================================================
-   ORNAMENTOS DECORATIVOS (SVG inline en pseudo-elementos)
-   ============================================================ */
 .app {
   max-width: 480px;
   margin: 0 auto;
@@ -68,18 +65,12 @@ body {
   width: 110px;
   height: 110px;
 }
-.ornament.tl { top: 0; left: 0; transform: rotate(0deg); }
+.ornament.tl { top: 0; left: 0; }
 .ornament.tr { top: 0; right: 0; transform: scaleX(-1); }
 .ornament.bl { bottom: 0; left: 0; transform: scaleY(-1); }
 .ornament.br { bottom: 0; right: 0; transform: scale(-1, -1); }
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-.header {
-  text-align: center;
-  padding: 24px 0 16px;
-}
+.header { text-align: center; padding: 24px 0 16px; }
 .header .couple {
   font-family: 'Allura', cursive;
   font-size: 44px;
@@ -96,25 +87,13 @@ body {
   margin-top: 10px;
 }
 
-/* Separador con diamante dorado central */
 .divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 20px auto 28px;
-  width: 80%;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin: 20px auto 28px; width: 80%;
 }
 .divider .line { flex: 1; height: 1px; background: var(--gold); opacity: 0.6; }
-.divider .diamond {
-  width: 8px; height: 8px;
-  background: var(--gold);
-  transform: rotate(45deg);
-}
+.divider .diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
 
-/* ============================================================
-   CARD MESA
-   ============================================================ */
 .mesa-card {
   background: var(--ivory);
   border: 1px solid rgba(201,168,92,0.4);
@@ -152,9 +131,6 @@ body {
   min-height: 48px;
 }
 
-/* ============================================================
-   MENSAJE INVITACIÓN
-   ============================================================ */
 .invitation {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
@@ -166,14 +142,8 @@ body {
   font-style: italic;
 }
 
-/* ============================================================
-   BOTONES
-   ============================================================ */
 .btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%;
   min-height: 56px;
   padding: 16px 20px;
@@ -191,35 +161,13 @@ body {
 .btn:active:not(:disabled) { transform: scale(0.98); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.btn-primary {
-  background: var(--ink);
-  color: var(--ivory);
-  border: 1px solid var(--gold);
-  box-shadow: var(--shadow);
-}
-.btn-secondary {
-  background: var(--ivory);
-  color: var(--ink);
-  border: 1px solid var(--gold);
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--ink-soft);
-  border: 1px dashed rgba(74,63,48,0.4);
-  min-height: 48px;
-  font-size: 14px;
-}
+.btn-primary { background: var(--ink); color: var(--ivory); border: 1px solid var(--gold); box-shadow: var(--shadow); }
+.btn-secondary { background: var(--ivory); color: var(--ink); border: 1px solid var(--gold); }
+.btn-ghost { background: transparent; color: var(--ink-soft); border: 1px dashed rgba(74,63,48,0.4); min-height: 48px; font-size: 14px; }
 
-/* ============================================================
-   TOGGLE NOMBRE
-   ============================================================ */
-.nombre-toggle {
-  margin: 16px 0 8px;
-  text-align: center;
-}
+.nombre-toggle { margin: 16px 0 8px; text-align: center; }
 .nombre-toggle button {
-  background: none;
-  border: none;
+  background: none; border: none;
   color: var(--ink-soft);
   font-family: inherit;
   font-size: 14px;
@@ -241,12 +189,8 @@ body {
   min-height: 48px;
 }
 
-/* Input file oculto */
 .file-input { display: none; }
 
-/* ============================================================
-   PANTALLA B · PREVIEW + UPLOAD
-   ============================================================ */
 .preview-header {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
@@ -254,19 +198,9 @@ body {
   color: var(--ink);
   margin: 8px 0 4px;
 }
-.preview-sub {
-  text-align: center;
-  font-size: 14px;
-  color: var(--ink-soft);
-  margin-bottom: 20px;
-}
+.preview-sub { text-align: center; font-size: 14px; color: var(--ink-soft); margin-bottom: 20px; }
 
-.thumbs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-}
+.thumbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
 .thumb {
   position: relative;
   aspect-ratio: 1;
@@ -275,20 +209,11 @@ body {
   border-radius: 10px;
   overflow: hidden;
 }
-.thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.thumb.uploading::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: rgba(14,11,7,0.5);
-}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb.uploading::after { content: ''; position: absolute; inset: 0; background: rgba(14,11,7,0.5); }
 .thumb.done::before {
   content: '✓';
-  position: absolute;
-  top: 4px; left: 4px;
+  position: absolute; top: 4px; left: 4px;
   width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center;
   background: var(--success);
@@ -300,8 +225,7 @@ body {
 }
 .thumb.error::before {
   content: '!';
-  position: absolute;
-  top: 4px; left: 4px;
+  position: absolute; top: 4px; left: 4px;
   width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center;
   background: var(--error);
@@ -326,45 +250,19 @@ body {
   z-index: 3;
 }
 
-.progress-wrap {
-  margin: 16px 0;
-  display: none;
-}
+.progress-wrap { margin: 16px 0; display: none; }
 .progress-wrap.active { display: block; }
-.progress-bar {
-  height: 6px;
-  background: rgba(201,168,92,0.2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--gold);
-  transition: width 0.3s ease;
-}
-.progress-text {
-  text-align: center;
-  font-size: 14px;
-  color: var(--ink-soft);
-  margin-top: 8px;
-}
+.progress-bar { height: 6px; background: rgba(201,168,92,0.2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: var(--gold); transition: width 0.3s ease; }
+.progress-text { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 8px; }
 
-/* ============================================================
-   PANTALLA C · CONFIRMACIÓN
-   ============================================================ */
-.success-screen {
-  text-align: center;
-  padding: 40px 20px;
-}
+.success-screen { text-align: center; padding: 40px 20px; }
 .success-icon {
   width: 96px; height: 96px;
   margin: 0 auto 24px;
   background: var(--success);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   color: white;
   font-size: 48px;
   line-height: 1;
@@ -378,15 +276,8 @@ body {
   margin-bottom: 12px;
   line-height: 1.3;
 }
-.success-stats {
-  font-size: 15px;
-  color: var(--ink-soft);
-  margin-bottom: 28px;
-}
+.success-stats { font-size: 15px; color: var(--ink-soft); margin-bottom: 28px; }
 
-/* ============================================================
-   ALERTAS / OFFLINE
-   ============================================================ */
 .alert {
   background: #FBE9E9;
   color: #6E2A2A;
@@ -399,21 +290,11 @@ body {
   display: none;
 }
 .alert.active { display: block; }
-.alert.info {
-  background: #FAF6EE;
-  color: var(--ink-soft);
-  border-color: var(--gold);
-}
+.alert.info { background: #FAF6EE; color: var(--ink-soft); border-color: var(--gold); }
 
-/* ============================================================
-   ESTADOS DE PANTALLA
-   ============================================================ */
 .screen { display: none; flex: 1; }
 .screen.active { display: flex; flex-direction: column; }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
 .footer {
   margin-top: auto;
   padding-top: 28px;
@@ -476,24 +357,16 @@ body {
     </g>
   </svg>
 
-  <!-- HEADER global -->
   <header class="header">
     <div class="couple">Guillermo &amp; Loren</div>
     <div class="date">16 de Mayo · 2026</div>
-    <div class="divider">
-      <span class="line"></span>
-      <span class="diamond"></span>
-      <span class="line"></span>
-    </div>
+    <div class="divider"><span class="line"></span><span class="diamond"></span><span class="line"></span></div>
   </header>
 
-  <!-- Alerta offline / errores globales -->
   <div id="alertOffline" class="alert">Sin conexión. Tus fotos no se han perdido — intenta de nuevo cuando vuelvas a tener internet.</div>
   <div id="alertError" class="alert"></div>
 
-  <!-- ============================================================
-       PANTALLA A · BIENVENIDA
-       ============================================================ -->
+  <!-- PANTALLA A · BIENVENIDA -->
   <section id="screenA" class="screen active">
     <div class="mesa-card">
       <div class="label">Mesa</div>
@@ -510,9 +383,7 @@ body {
       </select>
     </div>
 
-    <p class="invitation">
-      Tus fotos cuentan nuestra historia.<br>Compártelas con nosotros.
-    </p>
+    <p class="invitation">Tus fotos cuentan nuestra historia.<br>Compártelas con nosotros.</p>
 
     <div class="nombre-toggle">
       <button id="toggleNombre" type="button">+ Agregar mi nombre (opcional)</button>
@@ -521,16 +392,12 @@ body {
 
     <div class="spacer"></div>
 
-    <button id="btnCamera" class="btn btn-primary" type="button">
-      📷 Tomar foto / Elegir de galería
-    </button>
+    <button id="btnCamera" class="btn btn-primary" type="button">📷 Tomar foto / Elegir de galería</button>
 
     <input id="fileInput" class="file-input" type="file" accept="image/*" multiple capture="environment">
   </section>
 
-  <!-- ============================================================
-       PANTALLA B · PREVIEW + UPLOAD
-       ============================================================ -->
+  <!-- PANTALLA B · PREVIEW + UPLOAD -->
   <section id="screenB" class="screen">
     <div class="preview-header" id="previewMesaLabel">Mesa —</div>
     <p class="preview-sub" id="previewCount">0 fotos seleccionadas</p>
@@ -552,9 +419,7 @@ body {
     <button id="btnCancel" class="btn btn-ghost" type="button">Volver</button>
   </section>
 
-  <!-- ============================================================
-       PANTALLA C · CONFIRMACIÓN
-       ============================================================ -->
+  <!-- PANTALLA C · CONFIRMACIÓN -->
   <section id="screenC" class="screen">
     <div class="success-screen">
       <div class="success-icon">✓</div>
@@ -567,33 +432,29 @@ body {
   <footer class="footer">G &amp; L · 2026</footer>
 </div>
 
-<!-- ============================================================
-     LÓGICA · módulo Firebase + compresión cliente
-     ============================================================ -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import {
-  getStorage, ref as storageRef, uploadBytes
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
-import {
-  getFirestore, collection, addDoc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+// ============================================================
+// Boda Guillermo & Loren · QR Photo Drop
+// Storage: Cloudinary (unsigned upload preset, sin backend)
+// ============================================================
 
-import { firebaseConfig, BODA_ID, TOTAL_MESAS } from "./firebase-config.js";
+import {
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_UPLOAD_PRESET,
+  BODA_ID,
+  TOTAL_MESAS
+} from "./cloudinary-config.js";
 
-// browser-image-compression vía CDN (sin build). Compresión cliente reduce uso de Storage y acelera upload.
+// Compresión cliente vía CDN. Reduce ~70% el tamaño antes de subir → más rápido y menos uso de cuota.
 import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/+esm";
 
-// --- Init Firebase ---
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-const db = getFirestore(app);
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 // --- Estado global ---
 const state = {
   mesa: null,
   nombre: null,
-  photos: [], // { id, file, previewURL, status: 'pending'|'uploading'|'done'|'error' }
+  photos: [], // { id, file, previewURL, status }
   uploadedCount: 0,
   totalSession: 0
 };
@@ -625,13 +486,11 @@ function initMesa() {
 
   if (!isNaN(fromURL) && fromURL >= 1 && fromURL <= TOTAL_MESAS) {
     state.mesa = fromURL;
-    // Persistimos por si el invitado refresca
     try { localStorage.setItem("boda_mesa", String(fromURL)); } catch (_) {}
     showMesa(fromURL);
     return;
   }
 
-  // Sin param: probar localStorage
   try {
     const stored = parseInt(localStorage.getItem("boda_mesa"), 10);
     if (!isNaN(stored) && stored >= 1 && stored <= TOTAL_MESAS) {
@@ -641,7 +500,6 @@ function initMesa() {
     }
   } catch (_) {}
 
-  // Sin nada: mostrar dropdown
   mesaNumber.textContent = "?";
   mesaSelect.style.display = "block";
   mesaSelect.addEventListener("change", (e) => {
@@ -705,9 +563,7 @@ fileInput.addEventListener("change", async (e) => {
       previewURL: URL.createObjectURL(file)
     });
   }
-  // Reseteamos input para permitir re-seleccionar el mismo archivo
   fileInput.value = "";
-
   renderThumbs();
   goScreen("B");
 });
@@ -728,7 +584,6 @@ function renderThumbs() {
     img.loading = "lazy";
     div.appendChild(img);
 
-    // Botón remover solo si NO se ha subido
     if (p.status === "pending" || p.status === "error") {
       const btn = document.createElement("button");
       btn.className = "remove";
@@ -738,7 +593,6 @@ function renderThumbs() {
       btn.addEventListener("click", () => removePhoto(p.id));
       div.appendChild(btn);
     }
-
     thumbs.appendChild(div);
   });
 
@@ -758,7 +612,7 @@ function removePhoto(id) {
 }
 
 // ============================================================
-// UPLOAD · con compresión + retry x2
+// UPLOAD a Cloudinary · con compresión + retry x2
 // ============================================================
 $("btnSend").addEventListener("click", async () => {
   if (!navigator.onLine) {
@@ -779,7 +633,7 @@ $("btnSend").addEventListener("click", async () => {
   const total = pendientes.length;
   updateProgress(0, total);
 
-  // Subimos secuencialmente para no saturar conexiones móviles (más estable que en paralelo en 4G/WiFi event venue)
+  // Secuencial: más estable que paralelo en WiFi de salón de eventos
   for (const photo of pendientes) {
     photo.status = "uploading";
     renderThumbs();
@@ -796,7 +650,6 @@ $("btnSend").addEventListener("click", async () => {
     updateProgress(done, total);
   }
 
-  // Si todo terminó (con éxito o errores manejados), pasamos a confirmación
   const exitos = state.photos.filter(p => p.status === "done").length;
   const errores = state.photos.filter(p => p.status === "error").length;
 
@@ -814,46 +667,49 @@ $("btnSend").addEventListener("click", async () => {
 });
 
 async function uploadOne(photo) {
-  // 1. Comprimir a max 1920px, calidad 0.85 → reduce Storage + acelera subida
+  // 1. Comprimir a max 1920px, calidad 0.85 → reduce uso + acelera upload
   const compressed = await imageCompression(photo.file, {
     maxSizeMB: 4,
     maxWidthOrHeight: 1920,
     initialQuality: 0.85,
     useWebWorker: true,
     fileType: "image/jpeg"
-  }).catch(() => photo.file); // si compresión falla, subir original
+  }).catch(() => photo.file);
 
-  // 2. Reintentar hasta 2 veces si falla (3 intentos totales)
+  // 2. Reintentar hasta 2 veces (3 intentos totales) con backoff
   let lastErr = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const filename = `${Date.now()}_${photo.id.slice(0, 8)}.jpg`;
-      const path = `${BODA_ID}/mesa-${state.mesa}/${filename}`;
-      const ref = storageRef(storage, path);
+      const form = new FormData();
+      form.append("file", compressed);
+      form.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      // Folder anidado por mesa: las preset folder + esta sub-folder se concatenan
+      form.append("folder", `${BODA_ID}/mesa-${state.mesa}`);
+      // Tags para filtrado / bulk download desde el dashboard
+      form.append("tags", `${BODA_ID},mesa-${state.mesa}`);
+      // Metadata contextual (visible en dashboard de Cloudinary)
+      const ctx = [
+        `mesa=${state.mesa}`,
+        state.nombre ? `nombre=${state.nombre.replace(/[|=]/g, "")}` : "",
+        `deviceInfo=${simplifyUA(navigator.userAgent)}`,
+        `timestamp=${Date.now()}`
+      ].filter(Boolean).join("|");
+      form.append("context", ctx);
 
-      await uploadBytes(ref, compressed, {
-        contentType: "image/jpeg",
-        customMetadata: {
-          mesa: String(state.mesa),
-          nombre: state.nombre || ""
-        }
+      const res = await fetch(CLOUDINARY_URL, {
+        method: "POST",
+        body: form
       });
 
-      // 3. Registrar metadata en Firestore
-      await addDoc(collection(db, "fotos"), {
-        mesa: state.mesa,
-        nombre: state.nombre || null,
-        storagePath: path,
-        filename,
-        timestamp: serverTimestamp(),
-        sizeBytes: compressed.size,
-        deviceInfo: simplifyUA(navigator.userAgent)
-      });
-
-      return; // ¡éxito!
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status}: ${errBody.slice(0, 200)}`);
+      }
+      const json = await res.json();
+      if (!json.secure_url) throw new Error("Respuesta sin secure_url");
+      return json;
     } catch (err) {
       lastErr = err;
-      // backoff: 800ms, 1600ms
       await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
     }
   }
@@ -884,7 +740,6 @@ function goScreen(s) {
 }
 
 $("btnCancel").addEventListener("click", () => {
-  // Limpiar fotos pendientes pero conservar la sesión
   state.photos.forEach(p => URL.revokeObjectURL(p.previewURL));
   state.photos = [];
   progressWrap.classList.remove("active");
@@ -892,7 +747,6 @@ $("btnCancel").addEventListener("click", () => {
 });
 
 $("btnAgain").addEventListener("click", () => {
-  // Limpiar fotos subidas pero mantener uploadedCount / mesa
   state.photos.forEach(p => URL.revokeObjectURL(p.previewURL));
   state.photos = [];
   progressWrap.classList.remove("active");
@@ -902,9 +756,7 @@ $("btnAgain").addEventListener("click", () => {
 // ============================================================
 // OFFLINE detection
 // ============================================================
-function showOffline(on) {
-  alertOffline.classList.toggle("active", on);
-}
+function showOffline(on) { alertOffline.classList.toggle("active", on); }
 window.addEventListener("online", () => showOffline(false));
 window.addEventListener("offline", () => showOffline(true));
 showOffline(!navigator.onLine);
