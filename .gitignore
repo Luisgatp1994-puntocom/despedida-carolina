@@ -1,0 +1,7 @@
+qrs_boda.pdf
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+.vercel
+node_modules/
