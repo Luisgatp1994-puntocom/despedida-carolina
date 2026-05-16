@@ -2,8 +2,8 @@
 // Estos valores son públicos por diseño (la seguridad es el "upload preset" sin firma).
 // Reemplazar __REEMPLAZAR_*__ con los valores reales del dashboard de Cloudinary.
 
-export const CLOUDINARY_CLOUD_NAME = "__REEMPLAZAR_CLOUD_NAME__";
-export const CLOUDINARY_UPLOAD_PRESET = "__REEMPLAZAR_UPLOAD_PRESET__";
+export const CLOUDINARY_CLOUD_NAME = "du9nzknuq";
+export const CLOUDINARY_UPLOAD_PRESET = "boda_guillermo_loren";
 
 export const BODA_ID = "boda-guillermo-loren";
 export const TOTAL_MESAS = 7;
